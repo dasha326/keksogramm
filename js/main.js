@@ -21,7 +21,7 @@
 
   const array = Array.from({length: 25}, (item, i) => {
     return {
-      url: `photos/${i+1}.svg`,
+      url: `photos/${i+1}.jpg`,
       description: 'Описание',
       likes: randomizer(15, 200),
       comments: randomComments()
@@ -78,7 +78,9 @@
     const commentsLoader = document.querySelector('.comments-loader');
     commentsCount.classList.add('hidden');
     commentsLoader.classList.add('hidden');
-    document.querySelector('body').classList.add('modal-open');
+    window.utils.openModal();
   };
-  openBigImg();
+  //openBigImg();
+
+
 })();

@@ -682,7 +682,22 @@ main {
 
   border-radius: 5px;
 }
-
+.text__hashtags-container{
+  position: relative;
+}
+.text__hashtags-error{
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #000;
+  font-size: 12px;
+  margin-top: -5px;
+  text-transform: none;
+  line-height: 1.2;
+  background-color: burlywood;
+  padding: 5px;
+}
 .text__description {
   width: 450px;
   height: 100px;

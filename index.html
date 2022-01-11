@@ -60,7 +60,6 @@
                     <input class="effect-level__value" type="number" name="effect-level" value="">
                     <div class="effect-level__slider"></div>
                   </fieldset>
-
                   <!-- Кнопка для закрытия формы редактирования изображения -->
                   <button type="reset" class="img-upload__cancel  cancel" id="upload-cancel">Закрыть</button>
                 </div>
@@ -115,7 +114,11 @@
 
                 <!-- Добавление хэш-тегов и комментария к изображению -->
                 <fieldset class="img-upload__text text">
-                  <input class="text__hashtags" name="hashtags" placeholder="#ХэшТег">
+                  <div class="text__hashtags-container">
+                    <input class="text__hashtags" name="hashtags" placeholder="#ХэшТег" value="">
+                    <div class="text__hashtags-error"></div>
+                  </div>
+
                   <textarea class="text__description" name="description" placeholder="Ваш комментарий..."></textarea>
                 </fieldset>
 
@@ -229,6 +232,8 @@
   <template id="messages">
     <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
   </template>
+  <script src="js/utils.js"></script>
+  <script src="js/upload-image.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
