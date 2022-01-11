@@ -1,9 +1,9 @@
-'use strict';
-
-(() => {
+import {utils} from './utils.js';
+export const uploadImageScript = () => {
   const uploadForm = document.querySelector('.img-upload__form');
   const uploadBtn = uploadForm.querySelector('#upload-file');
-  const closeBtn = window.uploadOverlay.querySelector('.img-upload__cancel');
+  const uploadOverlay = document.querySelector('.img-upload__overlay');
+  const closeBtn = uploadOverlay.querySelector('.img-upload__cancel');
   const effectBtns = uploadForm.querySelectorAll('.img-upload__effects [name="effect"]');
   const uploadPreviewImg = uploadForm.querySelector('.img-upload__preview img');
   const t = uploadForm.querySelector('.effect-level__pin');
@@ -15,20 +15,18 @@
   const noneEffectClass = 'effects__preview--none';
   const hashTagInput = uploadForm.querySelector('.text__hashtags');
 
-  uploadBtn.addEventListener('change', () => {
-    window.utils.openModalUpload();
+  uploadBtn.addEventListener('change', (e) => {
+    e.stopPropagation();
+    utils.openModal(uploadOverlay);
   });
   closeBtn.addEventListener('click', () => {
-    window.utils.closeModalUpload();
+    utils.closeModal(uploadOverlay);
   });
-  document.addEventListener('click', (e) => {
-    const wrapper = e.target.closest('.img-upload__wrapper');
-    if (!document.querySelector('.img-upload__overlay').contains(wrapper)) {closeBtn.click()}
-  });
+
   document.addEventListener('keydown', e => {
-    window.utils.isEscEvent(e, () => {
+    utils.isEscEvent(e, () => {
       if (document.activeElement !== hashTagInput) {
-        closeBtn.click();
+       utils.closeModal(uploadOverlay);
       }
     });
   });
@@ -74,11 +72,10 @@
 
   /*Hash Tags*/
   const hashTagsErrorPlace = uploadForm.querySelector('.text__hashtags-error');
-  const maxHashTagsMessage = 'Нельзя указать больше 5 хэш-тегов';
 
   const hashTagsValidateHandler = (hashTags, isSubmit) => {
     let hashTagsErrorMessage = '';
-    window.utils.validMessage(hashTagInput, '');
+    utils.validMessage(hashTagInput, '');
 
     hashTags.forEach((hash) => {
       hashTagsErrorPlace.textContent = '';
@@ -110,7 +107,7 @@
       }
       // Добавление валидационного сообщения
       if (hashTagsErrorMessage !== '') {
-        window.utils.validMessage(hashTagInput, hashTagsErrorMessage);
+        utils.validMessage(hashTagInput, hashTagsErrorMessage);
       }
     }
   };
@@ -124,4 +121,5 @@
     hashTagsValidateHandler(hashTagsInputArray, true);
     e.preventDefault();
   })
-})();
+
+};

@@ -1,29 +1,40 @@
-'use strict';
+const ESC_KEYCODE = 'Escape';
+const ENTER_KEYCODE = 'Enter';
+const DEBOUNCE_INTERVAL = 300;
 
-(() => {
-  const ESC_KEYCODE = 'Escape';
-  const ENTER_KEYCODE = 'Enter';
-  const DEBOUNCE_INTERVAL = 300;
-  window.uploadOverlay = document.querySelector('.img-upload__overlay');
-  window.uploadForm = document.querySelector('.img-upload__form');
+let currentPopup;
 
-  window.utils = {
-    isEscEvent(e, action, param) {
-      if (e.key === ESC_KEYCODE) {
-        action(param);
-      }
-    },
-    openModalUpload() {
-      uploadOverlay.classList.remove('hidden');
-      document.querySelector('body').classList.add('modal-open');
-    },
-    closeModalUpload() {
-      uploadOverlay.classList.add('hidden');
-      document.querySelector('body').classList.remove('modal-open');
-      window.uploadForm.reset();
-    },
-    validMessage(element, message) {
-      element.setCustomValidity(message);
-    },
+const clickNoPopupHandler = function(e) {
+  if (!currentPopup.contains(e.target) || (currentPopup === e.target)) {
+    utils.closeModal(currentPopup);
   }
-})();
+};
+
+export const utils = {
+  randomizer(min, max) {
+    // получить случайное число от (min-0.5) до (max+0.5)
+    const rand = min - 0.5 + Math.random() * (max - min + 1);
+    return Math.round(rand);
+  },
+  isEscEvent(e, action, param) {
+    if (e.key === ESC_KEYCODE) {
+      action(param);
+    }
+  },
+  openModal(popup) {
+    popup.classList.remove('hidden');
+    document.querySelector('body').classList.add('modal-open');
+    currentPopup = popup;
+    document.addEventListener('click', clickNoPopupHandler)
+  },
+  closeModal(popup) {
+    popup.classList.add('hidden');
+    document.querySelector('body').classList.remove('modal-open');
+    //window.popup.reset();
+    document.removeEventListener('click', clickNoPopupHandler)
+
+  },
+  validMessage(element, message) {
+    element.setCustomValidity(message);
+  },
+};
