@@ -531,7 +531,8 @@ main {
   position: absolute;
   bottom: 10px;
   left: 50%;
-
+  display: flex;
+  align-items: center;
   width: 495px;
   height: 33px;
 
@@ -540,6 +541,7 @@ main {
   text-align: center;
   color: #ffffff;
   white-space: nowrap;
+  padding: 10px;
 
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 33px;
@@ -548,12 +550,29 @@ main {
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
 }
-
+.effect-level.hidden{
+  display: none;
+}
 .effect-level__value {
   display: none;
 }
-
-
+.effect-level__slider{
+  height: 4px;
+  width: 100%;
+  background-color: yellow;
+  position: relative;
+}
+.effect-level__pin{
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: yellow;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
 /**
  * Блок с эффектами, которые можно применить к изображению
  */
@@ -631,28 +650,33 @@ main {
 }
 
 .effects__preview--chrome {
-  -webkit-filter: grayscale(1);
-          filter: grayscale(1);
+  --element-chrome: 1;
+  -webkit-filter: grayscale(var(--element-chrome));
+          filter: grayscale(var(--element-chrome));
 }
 
 .effects__preview--sepia {
-  -webkit-filter: sepia(1);
-          filter: sepia(1);
+  --element-sepia: 1;
+  -webkit-filter: sepia(var(--element-sepia));
+          filter: sepia(var(--element-sepia));
 }
 
 .effects__preview--marvin {
-  -webkit-filter: invert(100%);
-          filter: invert(100%);
+  --element-marvin: 100%;
+  -webkit-filter: invert(var(--element-marvin));
+          filter: invert(var(--element-marvin));
 }
 
 .effects__preview--phobos {
-  -webkit-filter: blur(3px);
-          filter: blur(3px);
+  --element-phobos: 3px;
+  -webkit-filter: blur(var(--element-phobos));
+          filter: blur(var(--element-phobos));
 }
 
 .effects__preview--heat {
-  -webkit-filter: brightness(3);
-          filter: brightness(3);
+  --element-heat: 3;
+  -webkit-filter: brightness(var(--element-heat));
+          filter: brightness(var(--element-heat));
 }
 
 

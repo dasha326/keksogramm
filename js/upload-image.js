@@ -1,20 +1,28 @@
 import {utils} from './utils.js';
+
+const EFFECT_CHROME = 'chrome';
+const EFFECT_SEPIA = 'sepia';
+const EFFECT_MARVIN = 'marvin';
+const EFFECT_HEAT = 'heat';
+const EFFECT_PHOBOS = 'phobos';
+const EFFECT_NONE = 'none';
+
+
 export const uploadImageScript = () => {
   const uploadForm = document.querySelector('.img-upload__form');
   const uploadBtn = uploadForm.querySelector('#upload-file');
+  const uploadPreviewImg = uploadForm.querySelector('.img-upload__preview img');
   const uploadOverlay = document.querySelector('.img-upload__overlay');
   const closeBtn = uploadOverlay.querySelector('.img-upload__cancel');
-  const effectBtns = uploadForm.querySelectorAll('.img-upload__effects [name="effect"]');
-  const uploadPreviewImg = uploadForm.querySelector('.img-upload__preview img');
-  const t = uploadForm.querySelector('.effect-level__pin');
-  const chromeEffectClass = 'effects__preview--chrome';
-  const sepiaEffectClass = 'effects__preview--sepia';
-  const marvinEffectClass = 'effects__preview--marvin';
-  const heatEffectClass = 'effects__preview--heat';
-  const phobosEffectClass = 'effects__preview--phobos';
-  const noneEffectClass = 'effects__preview--none';
-  const hashTagInput = uploadForm.querySelector('.text__hashtags');
 
+  // Значения по умолчанию для эффектов
+  const START_EFFECT_CHROME= getComputedStyle(uploadPreviewImg).getPropertyValue('--element-chrome');
+  const START_EFFECT_SEPIA = getComputedStyle(uploadPreviewImg).getPropertyValue('--element-sepia');
+  const START_EFFECT_MARVIN = getComputedStyle(uploadPreviewImg).getPropertyValue('--element-marvin');
+  const START_EFFECT_PHOBOS = getComputedStyle(uploadPreviewImg).getPropertyValue('--element-phobos');
+  const START_EFFECT_HEAT = getComputedStyle(uploadPreviewImg).getPropertyValue('--element-heat');
+
+  // Загрузочное окно
   uploadBtn.addEventListener('change', (e) => {
     e.stopPropagation();
     utils.openModal(uploadOverlay);
@@ -31,46 +39,119 @@ export const uploadImageScript = () => {
     });
   });
 
-  const addImage = () => {
-
+  //Интенсивность эффектов
+  const effectBlock = uploadForm.querySelector('.effect-level');
+  const effectSlider = effectBlock.querySelector('.effect-level__slider');
+  const effectPin = effectSlider.querySelector('.effect-level__pin');
+  const effectValueInput = effectBlock.querySelector('.effect-level__value');
+  const startEffects = () => {
+    effectBlock.classList.remove('hidden');
+    uploadPreviewImg.style.setProperty('--element-chrome', START_EFFECT_CHROME);
+    uploadPreviewImg.style.setProperty('--element-sepia', START_EFFECT_SEPIA);
+    uploadPreviewImg.style.setProperty('--element-marvin', START_EFFECT_MARVIN);
+    uploadPreviewImg.style.setProperty('--element-phobos', START_EFFECT_PHOBOS);
+    uploadPreviewImg.style.setProperty('--element-heat', START_EFFECT_HEAT);
+    effectPin.style.left = `${effectSlider.offsetWidth}px`;
   };
+  effectPin.addEventListener('mousedown', (e) => {
+    e.preventDefault();
 
+    const onMouseMove = (moveEvt) => {
+      moveEvt.preventDefault();
+      const moveCoords = Math.max(Math.min(moveEvt.clientX - effectSlider.getBoundingClientRect().left, effectSlider.offsetWidth), 0);
+      effectPin.style.left = `${moveCoords}px`;
+      effectValueInput.value = Math.round(moveCoords * 100 / effectSlider.offsetWidth);
+      switch (uploadPreviewImg.dataset.effect) {
+        case EFFECT_CHROME: {
+          uploadPreviewImg.style.setProperty('--element-chrome', effectValueInput.value / 100);
+          break;
+        }
+        case EFFECT_SEPIA: {
+          uploadPreviewImg.style.setProperty('--element-sepia', effectValueInput.value / 100);
+          break;
+        }
+        case EFFECT_MARVIN: {
+          uploadPreviewImg.style.setProperty('--element-marvin', `${effectValueInput.value}%`);
+          break;
+        }
+        case EFFECT_PHOBOS: {
+          uploadPreviewImg.style.setProperty('--element-phobos', `${effectValueInput.value * 3 / 100}px`);
+          break;
+        }
+        case EFFECT_HEAT: {
+          uploadPreviewImg.style.setProperty('--element-heat', `${effectValueInput.value * 3 / 100}`);
+          break;
+        }
+      }
+    };
+
+    const onMouseUp = (upEvt) => {
+      upEvt.preventDefault();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  // Кнопки эффектов
+  const effectBtns = uploadForm.querySelectorAll('.img-upload__effects [name="effect"]');
+  const chromeEffectClass = 'effects__preview--chrome';
+  const sepiaEffectClass = 'effects__preview--sepia';
+  const marvinEffectClass = 'effects__preview--marvin';
+  const heatEffectClass = 'effects__preview--heat';
+  const phobosEffectClass = 'effects__preview--phobos';
+  const noneEffectClass = 'effects__preview--none';
   effectBtns.forEach(element => {
     element.addEventListener('change', () => {
-      console.log(element.value);
       switch (element.value) {
-        case 'chrome': {
+        case EFFECT_CHROME: {
           uploadPreviewImg.classList = chromeEffectClass;
+          uploadPreviewImg.dataset.effect = EFFECT_CHROME;
+          startEffects();
           break;
         }
-        case 'sepia': {
+        case EFFECT_SEPIA: {
           uploadPreviewImg.classList = sepiaEffectClass;
+          uploadPreviewImg.dataset.effect = EFFECT_SEPIA;
+            startEffects();
           break;
         }
-        case 'marvin': {
+        case EFFECT_MARVIN: {
           uploadPreviewImg.classList = marvinEffectClass;
+          uploadPreviewImg.dataset.effect = EFFECT_MARVIN;
+          startEffects();
           break;
         }
-        case 'heat': {
+        case EFFECT_HEAT: {
           uploadPreviewImg.classList = heatEffectClass;
+          uploadPreviewImg.dataset.effect = EFFECT_HEAT;
+          startEffects();
           break;
         }
-        case 'phobos': {
+        case EFFECT_PHOBOS: {
           uploadPreviewImg.classList = phobosEffectClass;
+          uploadPreviewImg.dataset.effect = EFFECT_PHOBOS;
+          startEffects();
           break;
         }
-        case 'none': {
+        case EFFECT_NONE: {
           uploadPreviewImg.classList = noneEffectClass;
+          uploadPreviewImg.dataset.effect = EFFECT_NONE;
+          effectBlock.classList.add('hidden');
           break;
         }
         default: {
           uploadPreviewImg.classList = noneEffectClass;
+          effectBlock.classList.add('hidden');
         }
       }
     })
   });
 
   /*Hash Tags*/
+  const hashTagInput = uploadForm.querySelector('.text__hashtags');
   const hashTagsErrorPlace = uploadForm.querySelector('.text__hashtags-error');
 
   const hashTagsValidateHandler = (hashTags, isSubmit) => {
