@@ -16,7 +16,7 @@ export const uploadImageScript = () => {
   const closeBtn = uploadOverlay.querySelector('.img-upload__cancel');
 
   // Значения по умолчанию для эффектов
-  const START_EFFECT_CHROME= getComputedStyle(uploadPreviewImg).getPropertyValue('--element-chrome');
+  const START_EFFECT_CHROME = getComputedStyle(uploadPreviewImg).getPropertyValue('--element-chrome');
   const START_EFFECT_SEPIA = getComputedStyle(uploadPreviewImg).getPropertyValue('--element-sepia');
   const START_EFFECT_MARVIN = getComputedStyle(uploadPreviewImg).getPropertyValue('--element-marvin');
   const START_EFFECT_PHOBOS = getComputedStyle(uploadPreviewImg).getPropertyValue('--element-phobos');

@@ -1,9 +1,9 @@
 import {utils} from './utils.js';
 import {uploadImageScript} from './upload-image.js';
 import {gallery} from './gallery.js';
-import {arrayImages} from './data.js';
+import {loadData} from './backend.js';
 
 (() => {
-  gallery(arrayImages);
   uploadImageScript();
+  loadData(gallery, utils.errorMessage)
 })();

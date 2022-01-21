@@ -37,4 +37,23 @@ export const utils = {
   validMessage(element, message) {
     element.setCustomValidity(message);
   },
+
+  errorMessage(error) {
+    const errorElement = document.createElement(`div`);
+    errorElement.style.cssText = `
+      position: fixed;
+      background-color: #f0f0ea;
+      color: #db1818;
+      text-align: center;
+      z-index: 9;
+      width: 100%;
+      padding: 10px;
+      font-weight: bold;
+      Font-size: 18px;`;
+    errorElement.textContent = error;
+    document.body.prepend(errorElement);
+    setTimeout(function () {
+      errorElement.remove();
+    }, 10000);
+  }
 };
