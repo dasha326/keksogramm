@@ -15,6 +15,7 @@ export const preview = (imgUrl, likeCount, description, comments) =>{
   bigPicLike.textContent = likeCount;
   bigPicDescription.textContent = description;
   bigPicCommentsCount.textContent = comments.length;
+
   utils.openModal(bigPic);
 
   // Добавление коментов
@@ -27,6 +28,7 @@ export const preview = (imgUrl, likeCount, description, comments) =>{
     bigPicCommentsText.textContent = item.message;
     bigPicCommentFragment.append(bigPicComment);
   });
+  bigPicComments.innerHTML = '';
   bigPicComments.append(bigPicCommentFragment);
   //const commentsCount = document.querySelector('.social__comment-count');
   //const commentsLoader = document.querySelector('.comments-loader');

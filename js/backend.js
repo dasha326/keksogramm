@@ -1,7 +1,7 @@
 const SUCCESS = 200;
 const NOT_FOUND = 404;
 
-export const loadData = (onLoad, onError) => {
+const loadData = (onLoad, onError) => {
   const xhr = new XMLHttpRequest();
   const url = 'https://21.javascript.pages.academy/kekstagram/data';
   xhr.responseType = `json`;
@@ -35,3 +35,25 @@ export const loadData = (onLoad, onError) => {
     onError(`Запрос не успел выполниться за ` + xhr.timeout + `мс`);
   });
 };
+
+const uploadForm = (formData, onLoad, onError) => {
+  const xhr = new XMLHttpRequest();
+  const url = 'https://21.javascript.pages.academy/kekstagram';
+  xhr.timeout = 10000;
+
+  xhr.open('POST', url);
+
+  xhr.send(formData);
+  xhr.addEventListener(`load`, function () {
+    if (xhr.status === SUCCESS) {
+      onLoad();
+    } else {
+      onError();
+    }
+  });
+  xhr.addEventListener(`error`, function () {
+    onError();
+  });
+};
+
+export {loadData, uploadForm}

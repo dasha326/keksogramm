@@ -1,4 +1,5 @@
 import {utils} from './utils.js';
+import {uploadForm} from './backend.js';
 
 const EFFECT_CHROME = 'chrome';
 const EFFECT_SEPIA = 'sepia';
@@ -9,9 +10,9 @@ const EFFECT_NONE = 'none';
 
 
 export const uploadImageScript = () => {
-  const uploadForm = document.querySelector('.img-upload__form');
-  const uploadBtn = uploadForm.querySelector('#upload-file');
-  const uploadPreviewImg = uploadForm.querySelector('.img-upload__preview img');
+  const form = document.querySelector('.img-upload__form');
+  const uploadBtn = form.querySelector('#upload-file');
+  const uploadPreviewImg = form.querySelector('.img-upload__preview img');
   const uploadOverlay = document.querySelector('.img-upload__overlay');
   const closeBtn = uploadOverlay.querySelector('.img-upload__cancel');
 
@@ -40,7 +41,7 @@ export const uploadImageScript = () => {
   });
 
   //Интенсивность эффектов
-  const effectBlock = uploadForm.querySelector('.effect-level');
+  const effectBlock = form.querySelector('.effect-level');
   const effectSlider = effectBlock.querySelector('.effect-level__slider');
   const effectPin = effectSlider.querySelector('.effect-level__pin');
   const effectValueInput = effectBlock.querySelector('.effect-level__value');
@@ -96,7 +97,7 @@ export const uploadImageScript = () => {
   });
 
   // Кнопки эффектов
-  const effectBtns = uploadForm.querySelectorAll('.img-upload__effects [name="effect"]');
+  const effectBtns = form.querySelectorAll('.img-upload__effects [name="effect"]');
   const chromeEffectClass = 'effects__preview--chrome';
   const sepiaEffectClass = 'effects__preview--sepia';
   const marvinEffectClass = 'effects__preview--marvin';
@@ -151,8 +152,8 @@ export const uploadImageScript = () => {
   });
 
   /*Hash Tags*/
-  const hashTagInput = uploadForm.querySelector('.text__hashtags');
-  const hashTagsErrorPlace = uploadForm.querySelector('.text__hashtags-error');
+  const hashTagInput = form.querySelector('.text__hashtags');
+  const hashTagsErrorPlace = form.querySelector('.text__hashtags-error');
 
   const hashTagsValidateHandler = (hashTags, isSubmit) => {
     let hashTagsErrorMessage = '';
@@ -165,7 +166,7 @@ export const uploadImageScript = () => {
         hashTagsErrorMessage = 'Не больше 20 символов в хеш-теге';
       }
 
-      if(!hash.match(/^#/)){
+      if(hash > 0 && !hash.match(/^#/)){
         hashTagsErrorMessage = 'Хэш-тег должен начинаться с символа';
       }
 
@@ -189,6 +190,8 @@ export const uploadImageScript = () => {
       // Добавление валидационного сообщения
       if (hashTagsErrorMessage !== '') {
         utils.validMessage(hashTagInput, hashTagsErrorMessage);
+      } else {
+        return true;
       }
     }
   };
@@ -197,10 +200,51 @@ export const uploadImageScript = () => {
     const hashTagsInputArray = hashTagInput.value.trim().split(' ');
     hashTagsValidateHandler(hashTagsInputArray)
   });
-  uploadForm.addEventListener('submit', (e) => {
-    const hashTagsInputArray = hashTagInput.value.split(' ');
-    hashTagsValidateHandler(hashTagsInputArray, true);
+
+  // Отправка формы
+  //success
+  const createSuccess = function () {
+    const newSuccessTemplate = document.querySelector(`#success`).content;
+    const newSuccess = newSuccessTemplate.querySelector(`.success`).cloneNode(true);
+    document.addEventListener(`click`, function () {
+      successClose(newSuccess);
+    });
+    document.querySelector(`main`).append(newSuccess);
+    var event = new Event('change');
+    var defaultEffect = form.querySelector('#effect-none');
+    defaultEffect.dispatchEvent(event);
+    form.reset();
+    utils.closeModal(uploadOverlay);
+  };
+  const successClose = function (element) {
+    element.remove();
+  };
+
+  //error
+  const removeError = function (element) {
+    element.remove();
+  };
+  const createError = function () {
+    const newErrorTemplate = document.querySelector(`#error`).content;
+    const newError = newErrorTemplate.querySelector(`.error`).cloneNode(true);
+    const newErrorCloseBtn = newError.querySelector(`.error__button`);
+
+    newErrorCloseBtn.addEventListener(`click`, function () {
+      removeError(newError);
+    });
+    document.addEventListener(`click`, function () {
+      removeError(newError);
+    });
+    document.querySelector(`main`).append(newError);
+  };
+
+  //upload
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
+    const hashTagsInputArray = hashTagInput.value.split(' ');
+    if (hashTagsValidateHandler(hashTagsInputArray, true)){
+      uploadForm(new FormData(form), createSuccess, createError);
+    }
   })
 
 };
