@@ -27,7 +27,8 @@ export const filter = (images) => {
 
 
   filterButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      if (e.target.classList.contains(activeClass)) return;
       document.querySelector(`.${activeClass}`).classList.remove(activeClass);
       btn.classList.add(activeClass);
       switch (btn.id) {
