@@ -7,7 +7,7 @@ const EFFECT_MARVIN = 'marvin';
 const EFFECT_HEAT = 'heat';
 const EFFECT_PHOBOS = 'phobos';
 const EFFECT_NONE = 'none';
-
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
 export const uploadImageScript = () => {
   const form = document.querySelector('.img-upload__form');
@@ -26,7 +26,17 @@ export const uploadImageScript = () => {
   // Загрузочное окно
   uploadBtn.addEventListener('change', (e) => {
     e.stopPropagation();
-    utils.openModal(uploadOverlay);
+    const file = uploadBtn.files[0];
+    const fileName = file.name.toLowerCase();
+    const isCorrectFormat = FILE_TYPES.some(it => {return fileName.endsWith(it)});
+    if (isCorrectFormat) {
+      const fileReader = new FileReader();
+      fileReader.addEventListener('load', function () {
+        uploadPreviewImg.src = fileReader.result;
+      });
+      fileReader.readAsDataURL(file);
+      utils.openModal(uploadOverlay);
+    }
   });
   closeBtn.addEventListener('click', () => {
     utils.closeModal(uploadOverlay);
